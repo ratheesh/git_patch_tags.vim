@@ -23,20 +23,19 @@
 " Drop this file into your $HOME/.vim/plugin directory.
 "
 " Examples:
-" <Leader>ack
+" <Leader>ca
 " 	Add a Acked-by tag getting developer info from git config
 "
-" <Leader>cpy
-" 	Add a copyright line getting developer info from git config and using
-" 	the current date
+" <Leader>cc
+" 	Add a Cc: tag asking user for e-mail id
 "
-" <Leader>rev
+" <Leader>cr
 " 	Add a Reviewed-by tag getting developer info from git config
 "
-" <Leader>sob
+" <Leader>cs
 " 	Add a Signed-off-by tag getting developer info from git config
 "
-" <Leader>tst
+" <Leader>ct
 " 	Add a Tested-by tag getting developer info from git config
 "
 " References:
@@ -47,12 +46,13 @@
 if exists("g:loaded_gitPatchTagsPlugin") | finish | endif
 let g:loaded_gitPatchTagsPlugin = 1
 
-map <Leader>ack :call GitAck()<CR>
-map <Leader>cpy :call GitCopyright()<CR>
-map <Leader>rev :call GitReviewed()<CR>
-map <Leader>sob :call GitSignOff()<CR>
-map <Leader>tst :call GitTested()<CR>
-
+" user local mapping to avoid conflict plugin's keymapping
+autocmd FileType gitcommit map <Leader>ca :call GitAck()<CR>
+" map <Leader>cpy :call GitCopyright()<CR>
+autocmd FileType gitcommit map <Leader>cc :call GitCC()<CR>
+autocmd FileType gitcommit map <Leader>cr :call GitReviewed()<CR>
+autocmd FileType gitcommit map <Leader>cs :call GitSignOff()<CR>
+autocmd FileType gitcommit map <Leader>ct :call GitTested()<CR>
 
 " Get developer info from git config
 funct! GitGetAuthor()
@@ -64,6 +64,12 @@ endfunc
 " Add a Acked-by tag getting developer info from git config
 funct! GitAck()
 	exe 'put =\"Acked-by: ' . GitGetAuthor() . '\"'
+endfunc
+
+" Add a CC line asking for info from User
+funct! GitCC()
+	let cc_info = input("CC To: ")
+	exe 'put =\"Cc: '   . cc_info . '\"'
 endfunc
 
 " Add a copyright line getting developer info from git config and using
@@ -87,3 +93,4 @@ endfunc
 funct! GitTested()
 	exe 'put =\"Tested-by: ' . GitGetAuthor() . '\"'
 endfunc
+
