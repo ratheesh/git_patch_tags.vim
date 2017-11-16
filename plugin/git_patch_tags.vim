@@ -22,15 +22,18 @@
 " Install Details:
 " Drop this file into your $HOME/.vim/plugin directory.
 "
-" Examples:
+" Keybindings:
 " <Leader>ca
-" 	Add a Acked-by tag getting developer info from git config
+" 	Add a Acked-by: tag getting developer info from git config
 "
 " <Leader>cc
-" 	Add a Cc: tag asking user for e-mail id
+" 	Add a Cc: tag asking info from user
 "
 " <Leader>cr
 " 	Add a Reviewed-by tag getting developer info from git config
+"
+" <Leader>cR
+" 	Add a Reported-by tag asking info from user
 "
 " <Leader>cs
 " 	Add a Signed-off-by tag getting developer info from git config
@@ -50,6 +53,7 @@ let g:loaded_gitPatchTagsPlugin = 1
 autocmd FileType gitcommit map <Leader>ca :call GitAck()<CR>
 " map <Leader>cpy :call GitCopyright()<CR>
 autocmd FileType gitcommit map <Leader>cc :call GitCC()<CR>
+autocmd FileType gitcommit map <Leader>cR :call GitReporter()<CR>
 autocmd FileType gitcommit map <Leader>cr :call GitReviewed()<CR>
 autocmd FileType gitcommit map <Leader>cs :call GitSignOff()<CR>
 autocmd FileType gitcommit map <Leader>ct :call GitTested()<CR>
@@ -70,6 +74,12 @@ endfunc
 funct! GitCC()
 	let cc_info = input("CC To: ")
 	exe 'put =\"Cc: '   . cc_info . '\"'
+endfunc
+
+" Add a Reported-by line asking for info from User
+funct! GitReporter()
+	let user_info = input("Reported by: ")
+	exe 'put =\"Reported-by: '   . user_info . '\"'
 endfunc
 
 " Add a copyright line getting developer info from git config and using
