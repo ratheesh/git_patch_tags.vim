@@ -14,6 +14,8 @@
 "  - Signed-off-by
 "  - Tested-by
 "  - Reviewed-by
+"  - Cc
+"  - Reported-by
 "
 " the plugin allows to add also a Copyright line.
 "
@@ -72,13 +74,13 @@ endfunc
 
 " Add a CC line asking for info from User
 funct! GitCC()
-	let cc_info = input("CC To(user<user@e-mail.com>)? ")
+	let cc_info = input("CC To(user <user@e-mail.com>)? ")
 	exe 'put =\"Cc: '   . cc_info . '\"'
 endfunc
 
 " Add a Reported-by line asking for info from User
 funct! GitReporter()
-	let user_info = input("Reported by(user<user@e-mail.com>)? ")
+	let user_info = input("Reported by(user <user@e-mail.com>)? ")
 	exe 'put =\"Reported-by: '   . user_info . '\"'
 endfunc
 
