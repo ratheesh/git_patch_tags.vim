@@ -25,84 +25,85 @@
 " Drop this file into your $HOME/.vim/plugin directory.
 "
 " Keybindings:
-" <Leader>ca
-" 	Add a Acked-by: tag getting developer info from git config
+" <Plug>(GitAck)
+"       Add a Acked-by: tag getting developer info from git config
 "
-" <Leader>cc
-" 	Add a Cc: tag asking info from user
+" <Plug>(GitCC)
+"       Add a Cc: tag asking info from user
 "
-" <Leader>cr
-" 	Add a Reviewed-by tag getting developer info from git config
+" <Plug>(GitReviewed)
+"       Add a Reviewed-by tag getting developer info from git config
 "
-" <Leader>cR
-" 	Add a Reported-by tag asking info from user
+" <Plug>(GitReporter)
+"       Add a Reported-by tag asking info from user
 "
-" <Leader>cs
-" 	Add a Signed-off-by tag getting developer info from git config
+" <Plug>(GitReviewed)
+"       Add a Reviewed-by tag asking info from user
 "
-" <Leader>ct
-" 	Add a Tested-by tag getting developer info from git config
+" <Plug>(GitSignOff)
+"       Add a Signed-off-by tag getting developer info from git config
+"
+" <Plug>(GitTested)
+"       Add a Tested-by tag getting developer info from git config
 "
 " References:
 " http://elinux.org/Developer_Certificate_Of_Origin
 " http://lxr.linux.no/source/Documentation/SubmittingPatches
 "
-
 if exists("g:loaded_gitPatchTagsPlugin") | finish | endif
 let g:loaded_gitPatchTagsPlugin = 1
 
-" user local mapping to avoid conflict plugin's keymapping
-autocmd FileType gitcommit map <Leader>ca :call GitAck()<CR>
-" map <Leader>cpy :call GitCopyright()<CR>
-autocmd FileType gitcommit map <Leader>cc :call GitCC()<CR>
-autocmd FileType gitcommit map <Leader>cR :call GitReporter()<CR>
-autocmd FileType gitcommit map <Leader>cr :call GitReviewed()<CR>
-autocmd FileType gitcommit map <Leader>cs :call GitSignOff()<CR>
-autocmd FileType gitcommit map <Leader>ct :call GitTested()<CR>
-
 " Get developer info from git config
 funct! GitGetAuthor()
-	" Strip terminating NULLs to prevent stray ^A chars (see :help system)
-	return system('git config --null --get user.name | tr -d "\0"') .
-	      \ ' <' . system('git config --null --get user.email | tr -d "\0"') . '>'
+    " Strip terminating NULLs to prevent stray ^A chars (see :help system)
+    return system('git config --null --get user.name | tr -d "\0"') .
+                \ ' <' . system('git config --null --get user.email | tr -d "\0"') . '>'
 endfunc
 
 " Add a Acked-by tag getting developer info from git config
-funct! GitAck()
-	exe 'put =\"Acked-by: ' . GitGetAuthor() . '\"'
+funct! git_patch_tags#GitAck()
+    exe 'put =\"Acked-by: ' . GitGetAuthor() . '\"'
 endfunc
 
 " Add a CC line asking for info from User
-funct! GitCC()
-	let cc_info = input("CC To(user <user@e-mail.com>)? ")
-	exe 'put =\"Cc: '   . cc_info . '\"'
+funct! git_patch_tags#GitCC()
+    let cc_info = input("CC To(user <user@e-mail.com>)? ")
+    exe 'put =\"Cc: '   . cc_info . '\"'
 endfunc
 
 " Add a Reported-by line asking for info from User
-funct! GitReporter()
-	let user_info = input("Reported by(user <user@e-mail.com>)? ")
-	exe 'put =\"Reported-by: '   . user_info . '\"'
+funct! git_patch_tags#GitReporter()
+    let user_info = input("Reported by(user <user@e-mail.com>)? ")
+    exe 'put =\"Reported-by: '   . user_info . '\"'
 endfunc
 
 " Add a copyright line getting developer info from git config and using
 " the current date
-funct! GitCopyright()
-	let date = strftime("%Y")
-	exe 'put =\"Copyright (C) ' . date . '  ' . GitGetAuthor() . '\"'
+funct! git_patch_tags#GitCopyright()
+    let date = strftime("%Y")
+    exe 'put =\"Copyright (C) ' . date . '  ' . GitGetAuthor() . '\"'
 endfunc
 
 " Add a Reviewed-by tag getting developer info from git config
-funct! GitReviewed()
-	exe 'put =\"Reviewed-by: ' . GitGetAuthor() . '\"'
+funct! git_patch_tags#GitReviewed()
+    exe 'put =\"Reviewed-by: ' . GitGetAuthor() . '\"'
 endfunc
 
 " Add a Signed-off-by tag getting developer info from git config
-funct! GitSignOff()
-	exe 'put =\"Signed-off-by: ' . GitGetAuthor() . '\"'
+funct! git_patch_tags#GitSignOff()
+    exe 'put =\"Signed-off-by: ' . GitGetAuthor() . '\"'
 endfunc
 
 " Add a Tested-by tag getting developer info from git config
-funct! GitTested()
-	exe 'put =\"Tested-by: ' . GitGetAuthor() . '\"'
+funct! git_patch_tags#GitTested()
+    exe 'put =\"Tested-by: ' . GitGetAuthor() . '\"'
 endfunc
+
+" Create Pluggable keybindings
+nnoremap <silent><Plug>GitAck      :call git_patch_tags#GitAck()<CR>
+nnoremap <silent><Plug>GitCC       :call git_patch_tags#GitCC()<CR>
+nnoremap <silent><Plug>GitReporter :call git_patch_tags#GitReporter()<CR>
+nnoremap <silent><Plug>GitReviewed :call git_patch_tags#GitReviewed()<CR>
+nnoremap <silent><Plug>GitSignOff  :call git_patch_tags#GitReviewed()<CR>
+nnoremap <silent><Plug>GitTested   :call git_patch_tags#GitTested()<CR>
 
