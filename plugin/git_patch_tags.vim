@@ -104,6 +104,6 @@ nnoremap <silent><Plug>GitAck      :call git_patch_tags#GitAck()<CR>
 nnoremap <silent><Plug>GitCC       :call git_patch_tags#GitCC()<CR>
 nnoremap <silent><Plug>GitReporter :call git_patch_tags#GitReporter()<CR>
 nnoremap <silent><Plug>GitReviewed :call git_patch_tags#GitReviewed()<CR>
-nnoremap <silent><Plug>GitSignOff  :call git_patch_tags#GitReviewed()<CR>
+nnoremap <silent><Plug>GitSignOff  :call git_patch_tags#GitSignOff()<CR>
 nnoremap <silent><Plug>GitTested   :call git_patch_tags#GitTested()<CR>
 
