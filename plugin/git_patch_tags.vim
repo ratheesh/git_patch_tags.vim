@@ -53,11 +53,55 @@
 if exists("g:loaded_gitPatchTagsPlugin") | finish | endif
 let g:loaded_gitPatchTagsPlugin = 1
 
+function! s:getfullname(f) abort
+    let f = a:f
+    let f = f=~"'." ? s:getmarkfile(f[1]) : f
+    let f = len(f) ? f : expand('%')
+    return fnamemodify(f, ':p')
+endfunction
+
+function! s:projroot_get(...) abort
+    let l:rootmarkers = ['.git', '.hg', '.svn', '.bzr']
+    let fullfile = s:getfullname(a:0 ? a:1 : '')
+    if exists('b:projectroot')
+        if stridx(fullfile, fnamemodify(b:projectroot, ':p'))==0
+            return b:projectroot
+        endif
+    endif
+    if fullfile =~ '^fugitive:/'
+        if exists('b:git_dir')
+            return fnamemodify(b:git_dir, ':h')
+        endif
+        return '' " skip any fugitive buffers early
+    endif
+    for marker in l:rootmarkers
+        let pivot=fullfile
+        while 1
+            let prev=pivot
+            let pivot=fnamemodify(pivot, ':h')
+            let fn = pivot.(pivot == '/' ? '' : '/').marker
+            " echom 'file: '. fn
+            if filereadable(fn) || isdirectory(fn)
+                return pivot
+            endif
+            if pivot==prev
+                break
+            endif
+        endwhile
+    endfor
+    return ''
+endfunction
+
+
 " Get developer info from git config
 funct! GitGetAuthor()
     " Strip terminating NULLs to prevent stray ^A chars (see :help system)
-    return system('git config --null --get user.name | tr -d "\0"') .
+    execute 'cd '.s:projroot_get()
+    let l:gitauthor=system('git config --null --get user.name | tr -d "\0"') .
                 \ ' <' . system('git config --null --get user.email | tr -d "\0"') . '>'
+    " echomsg l:gitauthor . " PWD: " . getcwd()
+    execute 'cd -'
+    return l:gitauthor
 endfunc
 
 " Add a Acked-by tag getting developer info from git config
